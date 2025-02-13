@@ -126,12 +126,24 @@ class MoleculeParser:
         with open(filepath, 'r') as f:
             return [line.strip() for line in f if line.strip()]
 
+def is_likely_file_path(input_str: str) -> bool:
+    """Determine if the provided string is likely a file path.
+    If the string contains newline characters or is longer than 200 characters, we assume it's direct input.
+    Otherwise, check if it exists as a file using Path.is_file().
+    """
+    if "\n" in input_str or len(input_str) > 50:
+        return False
+    try:
+        return Path(input_str).is_file()
+    except OSError:
+        return False
+
 def parse_input(input_data: Union[str, List[str]], parser_class) -> List[str]:
     """Convert input data to list of sequences/SMILES using appropriate parser."""
     # Handle list input (e.g. from command line arguments)
     if isinstance(input_data, list):
-        # If any item is a file path, try to parse it
-        if any(Path(item).is_file() for item in input_data):
+        # If any item is a file path based on our heuristic, try to parse it
+        if any(is_likely_file_path(item) for item in input_data):
             if len(input_data) > 1:
                 raise ValueError("When using file input, please provide only one file")
             return parse_input(input_data[0], parser_class)
@@ -140,8 +152,8 @@ def parse_input(input_data: Union[str, List[str]], parser_class) -> List[str]:
     
     # Handle single string input
     if isinstance(input_data, str):
-        # If it's a file path, parse it based on extension
-        if Path(input_data).is_file():
+        # Check if it's likely a file path
+        if is_likely_file_path(input_data):
             ext = Path(input_data).suffix.lower()
             parser_method = getattr(parser_class, f"from_{ext[1:]}", None)
             if parser_method:
@@ -189,9 +201,9 @@ def parse_arguments():
         description="PLAPT: Protein-Ligand Affinity Prediction Tool",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument('-p', '--proteins', nargs='+', required=True,
+    parser.add_argument('-p', '--proteins', type=str, nargs='+', required=True,
                       help='Protein sequence(s) or path to file (fasta/pdb/sdf/txt)')
-    parser.add_argument('-m', '--molecules', nargs='+', required=True,
+    parser.add_argument('-m', '--molecules', type=str, nargs='+', required=True,
                       help='SMILES string(s) or path to file (sdf/pdb/cif/txt)')
     parser.add_argument('-b', '--batch-size', type=int, default=4,
                       help='Batch size for predictions')

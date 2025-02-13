@@ -112,6 +112,29 @@ results = plapt.predict_affinity(proteins, molecules)
 print(results)
 ```
 
+## Docker
+
+You can also run the model using Docker:
+
+1. Build the Docker image locally:
+
+   ```bash
+   docker build -t plapt .
+   ```
+
+   Or pull the pre-built image from Docker Hub:
+
+   ```bash
+   docker pull cford38/plapt:latest
+   ```
+
+2. Run the Docker container:
+
+   ```bash
+   docker run --gpus all --rm --name plapt -it plapt /bin/bash
+   # docker run --gpus all --rm --name plapt -it cford38/plapt:latest /bin/bash
+   ```
+
 ## Used by
 
 PLAPT has been used in the following research:

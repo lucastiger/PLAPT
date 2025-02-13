@@ -65,7 +65,7 @@ class ProteinParser:
                         for atom in mol.GetAtoms():
                             info = atom.GetPDBResidueInfo()
                             if info and is_aa(info.GetResidueName(), standard=True):
-                                residues.append(three_to_one(info.GetResidueName()))
+                                residues.append(index_to_one(three_to_index(info.GetResidueName())))
                         sequence = ''.join(residues)
                     except:
                         continue

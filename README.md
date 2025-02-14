@@ -134,6 +134,8 @@ You can also run the model using Docker:
    docker run --gpus all --rm --name plapt -it plapt /bin/bash
    # docker run --gpus all --rm --name plapt -it cford38/plapt:latest /bin/bash
    ```
+> [!NOTE]
+> This image does not include all of the model weights, which will be downloaded the first time you run PLAPT inside in the container.
 
 ## Used by
 

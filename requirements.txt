@@ -3,7 +3,7 @@ transformers
 pandas
 scipy
 onnxruntime
-numpy=1.15
+numpy==1.15
 diskcache
 biopython
 rdkit>=2023.9.4
